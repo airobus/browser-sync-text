@@ -1,17 +1,34 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Main UI elements
   const textArea = document.getElementById("textContent")
   const uploadBtn = document.getElementById("uploadBtn")
   const downloadBtn = document.getElementById("downloadBtn")
   const statusElement = document.getElementById("status")
   const settingsLink = document.getElementById("settingsLink")
+  
+  // Settings panel elements
+  const settingsPanel = document.getElementById("settingsPanel")
+  const backLink = document.getElementById("backLink")
+  const gistTokenInput = document.getElementById("gistToken")
+  const gistIdInput = document.getElementById("gistId")
+  const gistFilenameInput = document.getElementById("gistFilename")
+  const saveBtn = document.getElementById("saveBtn")
+  const settingsStatusElement = document.getElementById("settingsStatus")
 
   // Check if settings are configured
   checkSettings()
+  
+  // Automatically load data when popup opens
+  autoLoadData()
 
-  // Event listeners
+  // Main UI event listeners
   uploadBtn.addEventListener("click", uploadText)
   downloadBtn.addEventListener("click", downloadText)
-  settingsLink.addEventListener("click", openSettings)
+  settingsLink.addEventListener("click", toggleSettingsPanel)
+  
+  // Settings panel event listeners
+  backLink.addEventListener("click", toggleSettingsPanel)
+  saveBtn.addEventListener("click", saveSettings)
 
   function checkSettings() {
     chrome.storage.sync.get(["gistToken", "gistId", "gistFilename"], (items) => {
@@ -23,7 +40,26 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!isConfigured) {
         setStatus("Please configure your settings first")
       } else {
-        setStatus("")
+        setStatus("Loading data...")
+      }
+    })
+  }
+  
+  function autoLoadData() {
+    chrome.storage.sync.get(["gistToken", "gistId", "gistFilename"], (items) => {
+      const { gistToken, gistId, gistFilename } = items
+      
+      if (gistToken && gistId && gistFilename) {
+        // Automatically download text when popup opens
+        fetchGist(gistToken, gistId, gistFilename)
+          .then((content) => {
+            textArea.value = content
+            setStatus("Data loaded successfully!", 'success')
+          })
+          .catch((error) => {
+            setStatus(`Error: ${error.message}`, 'error')
+            console.error("Auto-load error:", error)
+          })
       }
     })
   }
@@ -111,11 +147,79 @@ document.addEventListener("DOMContentLoaded", () => {
       })
   }
 
-  function openSettings() {
-    // Use optional chaining in case chrome.runtime is not available (e.g., in a test environment)
-    chrome?.runtime?.openOptionsPage
-      ? chrome.runtime.openOptionsPage()
-      : window.open(chrome.runtime.getURL("settings.html"))
+  function toggleSettingsPanel() {
+    const isSettingsPanelActive = settingsPanel.classList.contains('active')
+    
+    if (isSettingsPanelActive) {
+      // Hide settings panel
+      settingsPanel.classList.remove('active')
+    } else {
+      // Show settings panel and load current settings
+      settingsPanel.classList.add('active')
+      loadSettings()
+    }
+  }
+  
+  function loadSettings() {
+    chrome.storage.sync.get(["gistToken", "gistId", "gistFilename"], (items) => {
+      gistTokenInput.value = items.gistToken || ""
+      gistIdInput.value = items.gistId || ""
+      gistFilenameInput.value = items.gistFilename || ""
+    })
+  }
+
+  function saveSettings() {
+    const gistToken = gistTokenInput.value.trim()
+    const gistId = gistIdInput.value.trim()
+    const gistFilename = gistFilenameInput.value.trim()
+
+    if (!gistToken || !gistId || !gistFilename) {
+      setSettingsStatus("Please fill in all fields", 'error')
+      return
+    }
+
+    // Validate token by making a test request
+    validateGithubToken(gistToken)
+      .then(() => {
+        // Save settings
+        chrome.storage.sync.set(
+          {
+            gistToken: gistToken,
+            gistId: gistId,
+            gistFilename: gistFilename,
+          },
+          () => {
+            setSettingsStatus("Settings saved successfully!", 'success')
+            
+            // Update main UI status and buttons
+            setStatus("Settings updated. Ready to sync.", 'success')
+            uploadBtn.disabled = false
+            downloadBtn.disabled = false
+
+            // Clear status after 2 seconds and return to main panel
+            setTimeout(() => {
+              setSettingsStatus("")
+              toggleSettingsPanel()
+            }, 2000)
+          },
+        )
+      })
+      .catch((error) => {
+        setSettingsStatus(`Error: ${error.message}`, 'error')
+      })
+  }
+
+  function validateGithubToken(token) {
+    return fetch("https://api.github.com/user", {
+      headers: {
+        Authorization: `token ${token}`,
+      },
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error("Invalid GitHub token")
+      }
+      return response.json()
+    })
   }
 
   function setStatus(message, type = 'default') {
@@ -129,6 +233,20 @@ document.addEventListener("DOMContentLoaded", () => {
       statusElement.classList.add('success')
     } else if (type === 'error') {
       statusElement.classList.add('error')
+    }
+  }
+  
+  function setSettingsStatus(message, type = 'default') {
+    settingsStatusElement.textContent = message
+    
+    // Reset all classes
+    settingsStatusElement.classList.remove('success', 'error')
+    
+    // Add appropriate class based on message type
+    if (type === 'success') {
+      settingsStatusElement.classList.add('success')
+    } else if (type === 'error') {
+      settingsStatusElement.classList.add('error')
     }
   }
 })
