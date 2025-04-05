@@ -1,0 +1,35 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 主背景 -->
+  <rect width="128" height="128" rx="32" fill="#0071e3" />
+  
+  <!-- 文档图标 -->
+  <path d="M40 28C37.7909 28 36 29.7909 36 32V96C36 98.2091 37.7909 100 40 100H88C90.2091 100 92 98.2091 92 96V48L72 28H40Z" fill="white" />
+  
+  <!-- 文档折角 -->
+  <path d="M72 28V48H92L72 28Z" fill="#D1E5FF" />
+  
+  <!-- GitHub标志暗示 -->
+  <circle cx="64" cy="82" r="8" fill="#0071e3" opacity="0.9" />
+  
+  <!-- 文本线条 -->
+  <rect x="48" y="56" width="32" height="4" rx="2" fill="#0071e3" />
+  <rect x="48" y="66" width="32" height="4" rx="2" fill="#0071e3" />
+  
+  <!-- 同步箭头 -->
+  <g>
+    <!-- 右侧箭头 -->
+    <path d="M92 64C92 60 88 56 84 56V64H92Z" fill="#0071e3" />
+    <path d="M84 56C80 56 76 60 76 64H84V56Z" fill="#0071e3" />
+    
+    <!-- 左侧箭头 -->
+    <path d="M36 64C36 68 40 72 44 72V64H36Z" fill="#0071e3" />
+    <path d="M44 72C48 72 52 68 52 64H44V72Z" fill="#0071e3" />
+  </g>
+  
+  <!-- 连接线 -->
+  <path d="M52 64H76" stroke="#0071e3" stroke-width="4" stroke-linecap="round" />
+  
+  <!-- 云同步指示器 -->
+  <circle cx="94" cy="34" r="12" fill="#34c759" />
+  <path d="M89 34L92 37L99 30" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
