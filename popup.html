@@ -116,10 +116,7 @@
       display: flex;
       gap: 10px;
       margin-top: 12px;
-      justify-content: center;
-      max-width: 80%;
-      margin-left: auto;
-      margin-right: auto;
+      width: 100%;
     }
     
     button {
@@ -255,11 +252,11 @@
   <div class="container">
     <div class="header">
       <h1>Gist Text Sync</h1>
-      <a href="#" id="settingsLink" class="settings-link">Settings</a>
+      <a href="#" id="settingsLink" class="settings-link">⚙️ Settings</a>
     </div>
     
     <div class="card">
-      <textarea id="textContent" class="text-area" placeholder="Enter your text here..."></textarea>
+      <textarea id="textContent" class="text-area" placeholder="✨ Enter your text here... ✨"></textarea>
       
       <div class="buttons">
         <button id="uploadBtn">
@@ -267,14 +264,14 @@
             <path d="M12 16V4M12 4L7 9M12 4L17 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M3 20H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          Upload
+          📤 Upload
         </button>
         <button id="downloadBtn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 4V16M12 16L7 11M12 16L17 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M3 20H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          Download
+          📥 Download
         </button>
       </div>
     </div>
