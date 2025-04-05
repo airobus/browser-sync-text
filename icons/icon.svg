@@ -1,0 +1,20 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆形 -->
+  <circle cx="64" cy="64" r="60" fill="url(#gradient)" />
+  
+  <!-- 同步图标 -->
+  <path d="M64 36C49.088 36 37 48.088 37 63C37 67.064 37.944 70.936 39.624 74.4L46.2 70.6C45.128 68.2 44.6 65.648 44.6 63C44.6 52.28 53.28 43.6 64 43.6C74.72 43.6 83.4 52.28 83.4 63C83.4 73.72 74.72 82.4 64 82.4V74.8L49.6 89.2L64 103.6V96C78.912 96 91 83.912 91 69C91 54.088 78.912 42 64 42" fill="white"/>
+  
+  <!-- 文本图标 -->
+  <rect x="56" y="56" width="16" height="3" rx="1.5" fill="white"/>
+  <rect x="56" y="63" width="16" height="3" rx="1.5" fill="white"/>
+  <rect x="56" y="70" width="16" height="3" rx="1.5" fill="white"/>
+  
+  <!-- 渐变定义 -->
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0071e3" />
+      <stop offset="1" stop-color="#34c759" />
+    </linearGradient>
+  </defs>
+</svg>

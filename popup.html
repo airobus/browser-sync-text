@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gist Text Sync</title>
+  <style>
+    :root {
+      --primary-color: #0071e3;
+      --primary-hover: #0062c9;
+      --background-color: #f5f5f7;
+      --card-background: #ffffff;
+      --text-primary: #1d1d1f;
+      --text-secondary: #86868b;
+      --border-color: #d2d2d7;
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+      --radius: 12px;
+      --transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      width: 360px;
+      padding: 24px;
+      margin: 0;
+      background-color: var(--background-color);
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .header h1 {
+      font-size: 20px;
+      margin: 0;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+    
+    .settings-link {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: var(--transition);
+      padding: 6px 12px;
+      border-radius: 14px;
+      background-color: rgba(0, 113, 227, 0.1);
+    }
+    
+    .settings-link:hover {
+      background-color: rgba(0, 113, 227, 0.15);
+    }
+    
+    .card {
+      background-color: var(--card-background);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    
+    .text-area {
+      width: 100%;
+      min-height: 180px;
+      padding: 16px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      resize: vertical;
+      font-family: inherit;
+      background-color: var(--card-background);
+      color: var(--text-primary);
+      font-size: 15px;
+      line-height: 1.5;
+      transition: var(--transition);
+    }
+    
+    .text-area:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+    }
+    
+    .buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    
+    button {
+      padding: 12px 16px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 500;
+      flex: 1;
+      font-size: 15px;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    
+    button:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    button:disabled {
+      background-color: #d2d2d7;
+      color: #86868b;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .status {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 12px;
+      min-height: 20px;
+      text-align: center;
+      font-weight: 400;
+    }
+    
+    .success {
+      color: #34c759;
+    }
+    
+    .error {
+      color: #ff3b30;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Gist Text Sync</h1>
+      <a href="#" id="settingsLink" class="settings-link">Settings</a>
+    </div>
+    
+    <div class="card">
+      <textarea id="textContent" class="text-area" placeholder="Enter your text here..."></textarea>
+      
+      <div class="buttons">
+        <button id="uploadBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 16V4M12 4L7 9M12 4L17 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3 20H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Upload
+        </button>
+        <button id="downloadBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 4V16M12 16L7 11M12 16L17 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3 20H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Download
+        </button>
+      </div>
+    </div>
+    
+    <div id="status" class="status"></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
+
