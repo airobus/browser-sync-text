@@ -15,12 +15,6 @@
 
 ## 安装说明
 
-### 从Chrome网上应用店安装
-
-1. 访问[Chrome网上应用店](https://chrome.google.com/webstore/category/extensions)（即将上线）
-2. 搜索"Gist Text Sync"
-3. 点击"添加至Chrome"
-
 ### 开发者模式安装
 
 1. 下载或克隆此仓库到本地
@@ -29,95 +23,51 @@
 4. 点击"加载已解压的扩展程序"
 5. 选择此仓库的文件夹
 
+### 生产环境安装
+
+1. 从Chrome网上应用商店安装扩展
+2. 安装完成后，点击扩展图标打开主界面
+
 ## 使用指南
 
-### 初始设置
+1. **首次使用**：点击设置按钮配置GitHub Gist信息
+2. **同步文本**：
+   - 上传：编辑文本后点击上传按钮
+   - 下载：点击下载按钮获取最新文本
+3. **自动同步**：扩展会在打开时自动加载最新文本
 
-在使用Gist Text Sync之前，您需要完成以下设置：
+## 配置GitHub Gist
 
-1. **获取GitHub个人访问令牌**：
-   - 访问[GitHub的个人访问令牌页面](https://github.com/settings/tokens)
-   - 点击"Generate new token"（生成新令牌）
-   - 为令牌添加描述，如"Gist Text Sync"
-   - 选择"gist"权限范围
-   - 点击"Generate token"（生成令牌）
-   - 复制生成的令牌（注意：此令牌只会显示一次）
+1. 在GitHub上创建个人访问令牌（需要`gist`权限）
+2. 创建一个新的Gist或使用现有Gist
+3. 在扩展设置中输入：
+   - GitHub个人访问令牌
+   - Gist ID
+   - 文件名（默认为`sync-text.txt`）
 
-2. **创建GitHub Gist**：
-   - 访问[GitHub Gist](https://gist.github.com/)
-   - 创建一个新的Gist
-   - 添加文件名（例如："sync-text.md"）
-   - 添加一些初始内容
-   - 选择是公开还是私密Gist
-   - 点击"Create secret gist"或"Create public gist"
-   - 创建后，从URL中复制Gist ID（例如：`https://gist.github.com/yourusername/abcdef1234567890`中的`abcdef1234567890`部分）
+## 常见问题
 
-3. **配置扩展**：
-   - 点击Chrome工具栏中的Gist Text Sync图标
-   - 点击"设置"链接
-   - 输入您的GitHub令牌
-   - 输入Gist ID
-   - 输入文件名（与您在Gist中创建的文件名相同）
-   - 点击"保存"
+### 同步失败怎么办？
+1. 检查GitHub令牌是否有效且有gist权限
+2. 确认Gist ID和文件名正确
+3. 检查网络连接
 
-### 日常使用
+### 如何更新扩展？
+1. 开发者模式：拉取最新代码并重新加载扩展
+2. 生产环境：等待Chrome自动更新
 
-1. **查看同步内容**：
-   - 点击Chrome工具栏中的Gist Text Sync图标
-   - 扩展会自动加载最新的同步内容
+## 开发环境
 
-2. **编辑和上传内容**：
-   - 在文本区域中编辑内容
-   - 点击"上传"按钮将内容保存到Gist
+- Node.js 16+
+- Chrome扩展API
+- GitHub REST API
 
-3. **刷新内容**：
-   - 点击"下载"按钮从Gist获取最新内容
+## 贡献指南
 
-## 技术实现
-
-- **前端**：使用原生HTML、CSS和JavaScript构建
-- **存储**：使用Chrome的`storage.sync` API存储配置信息
-- **同步**：通过GitHub Gist API实现文本内容的同步
-- **认证**：使用GitHub个人访问令牌进行API认证
-- **性能优化**：实现了文本编辑的防抖处理和性能优化
-
-## 隐私说明
-
-- 所有数据都存储在您自己的GitHub Gist中
-- 您的GitHub令牌仅存储在浏览器本地，不会发送到任何第三方服务器
-- 扩展不会收集任何个人信息或使用情况数据
+欢迎提交Pull Request或Issue报告问题。请遵循现有代码风格并添加适当的测试。
 
 ## 故障排除
-
-### 常见问题
-
-1. **无法保存设置**
-   - 确保您的GitHub令牌有效且具有gist权限
-   - 检查网络连接
-
-2. **无法加载或保存内容**
-   - 确认Gist ID是否正确
-   - 确认文件名与Gist中的文件名完全匹配
-   - 检查您是否有权限访问该Gist
-
-3. **同步内容丢失**
-   - 在上传前确保您没有在其他设备上修改内容
-   - 如果发生冲突，请手动合并更改
 
 ### 联系支持
 
 如果您遇到任何问题或有改进建议，请在GitHub仓库中提交issue。
-
-## 许可证
-
-此项目采用MIT许可证 - 详情请参阅LICENSE文件。
-
-## 贡献指南
-
-欢迎贡献！如果您想为Gist Text Sync做出贡献，请遵循以下步骤：
-
-1. Fork此仓库
-2. 创建您的功能分支 (`git checkout -b feature/amazing-feature`)
-3. 提交您的更改 (`git commit -m 'Add some amazing feature'`)
-4. 推送到分支 (`git push origin feature/amazing-feature`)
-5. 开启一个Pull Request
