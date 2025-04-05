@@ -64,16 +64,28 @@ document.addEventListener("DOMContentLoaded", () => {
       const { gistToken, gistId, gistFilename } = items
       
       if (gistToken && gistId && gistFilename) {
-        // Automatically download text when popup opens
-        fetchGist(gistToken, gistId, gistFilename)
-          .then((content) => {
-            textArea.value = content
-            setStatus("Data loaded successfully!", 'success')
-          })
-          .catch((error) => {
-            setStatus(`Error: ${error.message}`, 'error')
-            console.error("Auto-load error:", error)
-          })
+        // First try to load from local cache
+        const cacheKey = `gist_${gistId}_${gistFilename}`
+        chrome.storage.local.get([cacheKey], (result) => {
+          if (result[cacheKey]) {
+            textArea.value = result[cacheKey]
+            setStatus("Data loaded from cache!", 'success')
+            return
+          }
+          
+          // If no cache, download from GitHub
+          fetchGist(gistToken, gistId, gistFilename)
+            .then((content) => {
+              textArea.value = content
+              // Save to local cache
+              chrome.storage.local.set({ [cacheKey]: content })
+              setStatus("Data loaded successfully!", 'success')
+            })
+            .catch((error) => {
+              setStatus(`Error: ${error.message}`, 'error')
+              console.error("Auto-load error:", error)
+            })
+        })
       }
     })
   }
@@ -92,6 +104,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       updateGist(gistToken, gistId, gistFilename, text)
         .then(() => {
+          // Update local cache
+          const cacheKey = `gist_${gistId}_${gistFilename}`
+          chrome.storage.local.set({ [cacheKey]: text })
           setStatus("Text uploaded successfully!", 'success')
         })
         .catch((error) => {
