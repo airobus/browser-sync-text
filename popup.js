@@ -210,11 +210,15 @@ document.addEventListener("DOMContentLoaded", () => {
             uploadBtn.disabled = false
             downloadBtn.disabled = false
 
-            // Clear status after 2 seconds and return to main panel
+            // Clear status after 2 seconds but don't automatically toggle panel
+            // This prevents the bug where clicking back and then having the timeout
+            // toggle the panel again
             setTimeout(() => {
               setSettingsStatus("")
-              toggleSettingsPanel()
             }, 2000)
+            
+            // Return to main panel immediately
+            toggleSettingsPanel()
           },
         )
       })
