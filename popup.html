@@ -83,20 +83,27 @@
       padding: 16px;
       border: 2px solid var(--border-color);
       border-radius: var(--radius);
+      /* 优化resize性能 */
       resize: vertical;
       font-family: inherit;
       background-color: var(--card-background);
       color: var(--text-primary);
       font-size: 16px;
       line-height: 1.5;
-      transition: var(--transition);
-      box-shadow: 0 0 5px rgba(0,0,0,0.05);
+      /* 移除过渡效果以提高性能 */
+      /* 简化阴影效果 */
+      /* 添加硬件加速，但限制在必要的属性上 */
+      will-change: height;
+      /* 避免过度使用will-change和transform，可能导致内存消耗 */
+      /* transform: translateZ(0); */
     }
     
     .text-area:focus {
       outline: none;
       border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
+      /* 简化focus状态的阴影效果 */
+      /* box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2); */
+      border-width: 2px;
     }
     
     .buttons {

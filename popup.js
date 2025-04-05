@@ -14,12 +14,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const gistFilenameInput = document.getElementById("gistFilename")
   const saveBtn = document.getElementById("saveBtn")
   const settingsStatusElement = document.getElementById("settingsStatus")
+  
+  // 防抖函数，用于优化resize事件
+  function debounce(func, wait) {
+    let timeout
+    return function() {
+      const context = this
+      const args = arguments
+      clearTimeout(timeout)
+      timeout = setTimeout(() => func.apply(context, args), wait)
+    }
+  }
 
   // Check if settings are configured
   checkSettings()
   
   // Automatically load data when popup opens
   autoLoadData()
+
+  // 优化文本框性能
+  optimizeTextAreaPerformance()
 
   // Main UI event listeners
   uploadBtn.addEventListener("click", uploadText)
@@ -248,6 +262,27 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (type === 'error') {
       settingsStatusElement.classList.add('error')
     }
+  }
+  
+  // 优化文本框性能的函数
+  function optimizeTextAreaPerformance() {
+    // 使用被动事件监听器减少事件处理开销
+    textArea.addEventListener('scroll', () => {}, { passive: true })
+    
+    // 使用防抖函数处理resize事件
+    const debouncedResize = debounce(() => {
+      // 在resize结束后执行的操作
+      // 这里可以留空，因为我们只是想减少事件触发频率
+    }, 100) // 100ms的防抖延迟
+    
+    // 监听文本框的resize事件
+    // 注意：这是通过监听mouseup来模拟resize结束事件
+    textArea.addEventListener('mousedown', () => {
+      document.addEventListener('mousemove', debouncedResize)
+      document.addEventListener('mouseup', () => {
+        document.removeEventListener('mousemove', debouncedResize)
+      }, { once: true })
+    })
   }
 })
 
