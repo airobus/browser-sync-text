@@ -31,8 +31,8 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          name: Release ${{ steps.date.outputs.SHORT_DATE }}  # 使用简短日期作为Release名称
-          tag_name: ${{ steps.date.outputs.SHORT_DATE }}  # 使用日期作为标签
+          name: sync-text-${{ steps.date.outputs.SHORT_DATE }}  # 使用简短日期作为Release名称
+          tag_name: sync-text-${{ steps.date.outputs.SHORT_DATE }}-${{ github.run_id }}  # 使用日期作为标签
           body: "Automated release created on ${{ steps.date.outputs.SHORT_DATE }}"
           files: |
             sync-text-${{ steps.date.outputs.SHORT_DATE }}.zip
