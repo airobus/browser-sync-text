@@ -125,6 +125,9 @@ document.addEventListener("DOMContentLoaded", () => {
       fetchGist(gistToken, gistId, gistFilename)
         .then((content) => {
           textArea.value = content
+          // Update local cache
+          const cacheKey = `gist_${gistId}_${gistFilename}`
+          chrome.storage.local.set({ [cacheKey]: content })
           setStatus("Text downloaded successfully!", 'success')
         })
         .catch((error) => {
