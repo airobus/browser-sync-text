@@ -34,6 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 优化文本框性能
   optimizeTextAreaPerformance()
+  
+  // 添加自动保存功能
+  setupAutoSave()
 
   // Main UI event listeners
   uploadBtn.addEventListener("click", uploadText)
@@ -305,6 +308,64 @@ document.addEventListener("DOMContentLoaded", () => {
         document.removeEventListener('mousemove', debouncedResize)
       }, { once: true })
     })
+  }
+
+  // 设置自动保存功能
+  function setupAutoSave() {
+    // 创建防抖的自动保存函数，延迟500毫秒
+    const debouncedAutoSave = debounce(function() {
+      const text = textArea.value
+      
+      // 获取当前设置的Gist信息
+      chrome.storage.sync.get(["gistId", "gistFilename"], (items) => {
+        const { gistId, gistFilename } = items
+        
+        if (gistId && gistFilename) {
+          // 创建缓存键
+          const cacheKey = `gist_${gistId}_${gistFilename}`
+          
+          // 保存到本地缓存
+          chrome.storage.local.set({ [cacheKey]: text }, () => {
+            console.log("文本已自动保存到缓存")
+            
+            // 可选：显示一个短暂的自动保存提示
+            const tempStatus = document.createElement("div")
+            tempStatus.className = "auto-save-indicator"
+            tempStatus.textContent = "已自动保存"
+            tempStatus.style.position = "absolute"
+            tempStatus.style.bottom = "10px"
+            tempStatus.style.right = "10px"
+            tempStatus.style.padding = "5px 10px"
+            tempStatus.style.borderRadius = "4px"
+            tempStatus.style.backgroundColor = "rgba(0, 128, 0, 0.2)"
+            tempStatus.style.color = "green"
+            tempStatus.style.fontSize = "12px"
+            tempStatus.style.opacity = "0"
+            tempStatus.style.transition = "opacity 0.3s ease"
+            
+            document.body.appendChild(tempStatus)
+            
+            // 显示提示
+            setTimeout(() => {
+              tempStatus.style.opacity = "1"
+            }, 10)
+            
+            // 2秒后隐藏提示
+            setTimeout(() => {
+              tempStatus.style.opacity = "0"
+              
+              // 完全隐藏后移除元素
+              setTimeout(() => {
+                document.body.removeChild(tempStatus)
+              }, 300)
+            }, 2000)
+          })
+        }
+      })
+    }, 500)
+    
+    // 添加输入事件监听器
+    textArea.addEventListener("input", debouncedAutoSave)
   }
 })
 
