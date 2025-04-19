@@ -1,21 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gist Text Sync</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <style>
     :root {
-      --primary-color: #0071e3;
-      --primary-hover: #0062c9;
-      --background-color: #f5f5f7;
-      --card-background: #ffffff;
-      --text-primary: #1d1d1f;
-      --text-secondary: #86868b;
-      --border-color: #d2d2d7;
-      --shadow: 0 2px 8px rgba(0,0,0,0.08);
-      --radius: 12px;
-      --transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      /* 主色调 */
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-dimmed: rgba(255, 255, 255, 0.5);
+      
+      /* 高对比色 */
+      --accent-gold: #ffc043;
+      --accent-gold-hover: #ffca5c;
+      --accent-pink: #ff4d8f;
+      --accent-pink-hover: #ff69a2;
+      
+      /* 边框和阴影 */
+      --border: rgba(255, 255, 255, 0.1);
+      --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      --highlight-shadow: 0 0 15px rgba(255, 192, 67, 0.3);
+      
+      /* 圆角 */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      
+      /* 动画 */
+      --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-bounce: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     
     * {
@@ -25,238 +43,328 @@
     }
     
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      width: 400px;
-      padding: 24px;
-      margin: 0;
-      background-color: var(--background-color);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-color);
       color: var(--text-primary);
+      width: 420px;
+      padding: 24px;
       line-height: 1.5;
+      font-size: 15px;
     }
     
-    .container {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-    
+    /* 标题样式 */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 24px;
     }
-
-    .header-links {
+    
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, #ffffff, rgba(255, 255, 255, 0.85));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+    
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      margin-bottom: 24px;
+    }
+    
+    /* 卡片样式 */
+    .card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: var(--card-shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+    }
+    
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--card-shadow), 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+    
+    /* 高亮卡片 */
+    .card-highlight {
+      position: relative;
+      border: 1px solid rgba(255, 192, 67, 0.3);
+    }
+    
+    .card-highlight::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-gold), var(--accent-pink));
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+    
+    /* 文本区域 */
+    .textarea-wrapper {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    
+    #textContent {
+      width: 100%;
+      min-height: 200px;
+      padding: 16px;
+      background-color: rgba(0, 0, 0, 0.2);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 15px;
+      resize: vertical;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    
+    #textContent:focus {
+      outline: none;
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 0 2px rgba(255, 192, 67, 0.25);
+    }
+    
+    #textContent::placeholder {
+      color: var(--text-dimmed);
+    }
+    
+    /* 自动保存指示器 */
+    .auto-save-indicator {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: var(--accent-gold);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 20px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity var(--transition-normal), transform var(--transition-bounce);
+    }
+    
+    .auto-save-indicator.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* 按钮样式 */
+    .buttons {
       display: flex;
-      gap: 8px;
+      gap: 12px;
+    }
+    
+    .btn {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-    }
-    
-    .header-links svg {
-      position: relative;
-      top: 2px;
-    }
-    
-    .header h1 {
-      font-size: 20px;
-      margin: 0;
+      padding: 12px 20px;
       font-weight: 600;
-      color: var(--text-primary);
-      letter-spacing: -0.01em;
+      font-size: 14px;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: all var(--transition-bounce);
+      flex: 1;
+      gap: 8px;
     }
     
+    .btn-primary {
+      background-color: var(--accent-gold);
+      color: #000000;
+      box-shadow: 0 4px 10px rgba(255, 192, 67, 0.3);
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--accent-gold-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(255, 192, 67, 0.4);
+    }
+    
+    .btn-secondary {
+      background-color: var(--accent-pink);
+      color: white;
+      box-shadow: 0 4px 10px rgba(255, 77, 143, 0.3);
+    }
+    
+    .btn-secondary:hover {
+      background-color: var(--accent-pink-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(255, 77, 143, 0.4);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+      transition: all 0.1s;
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    /* 设置链接 */
     .settings-link {
-      color: var(--primary-color);
-      text-decoration: none;
-      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-size: 13px;
       font-weight: 500;
-      transition: var(--transition);
-      padding: 6px 12px;
-      border-radius: 14px;
-      background-color: rgba(0, 113, 227, 0.1);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+      gap: 6px;
     }
     
     .settings-link:hover {
-      background-color: rgba(0, 113, 227, 0.15);
-    }
-    
-    .settings-link:active {
-      background-color: rgba(0, 113, 227, 0.2);
-      transform: scale(0.98);
-      transition: none;
-    }
-    
-    .card {
-      background-color: var(--card-background);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow);
-    }
-    
-    .text-area {
-      width: 100%;
-      min-height: 250px;
-      padding: 16px;
-      border: 2px solid var(--border-color);
-      border-radius: var(--radius);
-      /* 优化resize性能 */
-      resize: vertical;
-      font-family: inherit;
-      background-color: var(--card-background);
+      background-color: rgba(255, 255, 255, 0.1);
       color: var(--text-primary);
-      font-size: 16px;
-      line-height: 1.5;
-      /* 移除过渡效果以提高性能 */
-      /* 简化阴影效果 */
-      /* 添加硬件加速，但限制在必要的属性上 */
-      will-change: height;
-      /* 避免过度使用will-change和transform，可能导致内存消耗 */
-      /* transform: translateZ(0); */
-    }
-    
-    .text-area:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      /* 简化focus状态的阴影效果 */
-      /* box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2); */
-      border-width: 2px;
-    }
-    
-    .buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 12px;
-      width: 100%;
-    }
-    
-    button {
-      padding: 8px 12px;
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: var(--radius);
-      cursor: pointer;
-      font-weight: 500;
-      flex: 1;
-      font-size: 14px;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-    }
-    
-    button:hover {
-      background-color: var(--primary-hover);
       transform: translateY(-1px);
     }
     
-    button:active {
-      transform: translateY(0);
-      background-color: var(--primary-hover);
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-      transition: none;
-    }
-    
-    button:disabled {
-      background-color: #d2d2d7;
-      color: #86868b;
-      cursor: not-allowed;
-      transform: none;
-    }
-    
+    /* 状态信息 */
     .status {
-      font-size: 12px;
+      font-size: 13px;
       color: var(--text-secondary);
-      margin-top: 8px;
-      min-height: 16px;
+      padding: 8px 0;
+      min-height: 24px;
       text-align: center;
-      font-weight: 400;
     }
     
     .success {
-      color: #34c759;
+      color: #4ade80;
     }
     
     .error {
-      color: #ff3b30;
+      color: #f87171;
     }
     
-    /* Settings Panel Styles */
+    /* 功能列表 */
+    .feature-list {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    
+    .feature-check {
+      color: var(--accent-gold);
+      font-size: 16px;
+    }
+    
+    /* 设置面板 */
     .settings-panel {
-      display: none;
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: var(--background-color);
+      background-color: var(--bg-color);
       z-index: 10;
       padding: 24px;
-      animation: fadeIn 0.2s ease-out;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      transform: translateX(100%);
+      transition: transform var(--transition-normal);
+      box-sizing: border-box;
     }
     
     .settings-panel.active {
-      display: block;
+      transform: translateX(0);
     }
     
+    /* 表单元素 */
     .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    
-    .form-group:last-child {
-      margin-bottom: 0;
+      margin-bottom: 20px;
     }
     
     label {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-primary);
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
     }
     
     input {
+      width: 100%;
       padding: 12px 16px;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      font-family: inherit;
-      font-size: 15px;
+      background-color: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
       color: var(--text-primary);
-      background-color: var(--card-background);
-      transition: var(--transition);
+      font-family: inherit;
+      font-size: 14px;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
     }
     
     input:focus {
       outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 0 2px rgba(255, 192, 67, 0.25);
     }
     
+    input::placeholder {
+      color: var(--text-dimmed);
+    }
+    
+    /* 返回链接 */
     .back-link {
-      color: var(--primary-color);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
       text-decoration: none;
       font-size: 14px;
       font-weight: 500;
-      transition: var(--transition);
-      padding: 6px 12px;
-      border-radius: 14px;
-      background-color: rgba(0, 113, 227, 0.1);
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      padding: 8px 12px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
     }
     
     .back-link:hover {
-      background-color: rgba(0, 113, 227, 0.15);
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      transform: translateX(-2px);
+    }
+    
+    /* 辅助动画 */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
     }
   </style>
 </head>
@@ -264,69 +372,95 @@
   <div class="container">
     <div class="header">
       <h1>Gist Text Sync</h1>
-      <div class="header-links">
-        <a href="https://github.com/airobus/browser-sync-text" target="_blank" id="githubLink" class="settings-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.09.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0112 6.836c.85.004 1.705.115 2.504.336 1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z" fill="currentColor"/>
-          </svg>
-          GitHub
-        </a>
-        <a href="#" id="settingsLink" class="settings-link">⚙️ Settings</a>
-      </div>
+      <a href="#" id="settingsLink" class="settings-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        设置
+      </a>
     </div>
     
-    <div class="card">
-      <textarea id="textContent" class="text-area" placeholder="✨ Enter your text here... ✨"></textarea>
+    <p class="subtitle">跨设备同步您的文本内容到GitHub Gist</p>
+    
+    <div class="card card-highlight">
+      <div class="textarea-wrapper">
+        <textarea id="textContent" placeholder="在此输入您想同步的文本内容..."></textarea>
+        <div id="autoSaveIndicator" class="auto-save-indicator">已自动保存</div>
+      </div>
+      
+      <div class="feature-list">
+        <div class="feature-item">
+          <span class="feature-check">✓</span>
+          <span>实时自动保存</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-check">✓</span>
+          <span>跨设备同步</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-check">✓</span>
+          <span>无限字符数</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-check">✓</span>
+          <span>安全加密传输</span>
+        </div>
+      </div>
       
       <div class="buttons">
-        <button id="uploadBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 16V4M12 4L7 9M12 4L17 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M3 20H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <button id="uploadBtn" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
           </svg>
-          📤 Upload
+          上传到Gist
         </button>
-        <button id="downloadBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 4V16M12 16L7 11M12 16L17 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M3 20H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <button id="downloadBtn" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
           </svg>
-          📥 Download
+          从Gist下载
         </button>
       </div>
     </div>
     
     <div id="status" class="status"></div>
     
-    <!-- Settings Panel -->
+    <!-- 设置面板 -->
     <div id="settingsPanel" class="settings-panel">
       <div class="header">
-        <h1>Settings</h1>
+        <h2>GitHub Gist 设置</h2>
         <a href="#" id="backLink" class="back-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
-          Back
+          返回
         </a>
       </div>
       
       <div class="card">
         <div class="form-group">
           <label for="gistToken">GitHub Token</label>
-          <input type="password" id="gistToken" placeholder="Enter your GitHub token">
+          <input type="password" id="gistToken" placeholder="输入您的GitHub personal access token">
         </div>
         
         <div class="form-group">
           <label for="gistId">Gist ID</label>
-          <input type="text" id="gistId" placeholder="Enter your Gist ID">
+          <input type="text" id="gistId" placeholder="输入您的Gist ID">
         </div>
         
         <div class="form-group">
-          <label for="gistFilename">Filename</label>
-          <input type="text" id="gistFilename" placeholder="Enter the filename in your Gist">
+          <label for="gistFilename">文件名</label>
+          <input type="text" id="gistFilename" placeholder="输入文件名" list="filenameOptions">
+          <datalist id="filenameOptions"></datalist>
         </div>
         
-        <button id="saveBtn">Save Settings</button>
+        <button id="saveBtn" class="btn btn-primary">保存设置</button>
       </div>
       
       <div id="settingsStatus" class="status"></div>
