@@ -1,6 +1,6 @@
 # SyncScribe
 
-<img src="icons/128.png" alt="SyncScribe Logo" width="128" height="128" align="right"/>
+![SyncScribe Logo](icons/128.png)
 
 一款优雅的跨设备文本同步工具，通过GitHub Gist实现无缝连接。轻松记录、同步并随时访问您的重要内容，无论您身在何处。
 
