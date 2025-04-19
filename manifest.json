@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SyncScribe",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Sync text across browsers using GitHub Gist",
   "permissions": ["storage"],
   "action": {
